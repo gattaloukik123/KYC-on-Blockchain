@@ -1,13 +1,38 @@
 pragma solidity >=0.4.21 <0.7.0;
 
-contract KycBlockChain{
+interface KYC_Functions{
+    enum Status {Accepted, Rejected, Pending}
+    // Checks if the current address is an Organisation(Bank) or not 
+    function isOrg() external view returns(bool);
+    // Checks if the current address is an Customer or not 
+    function isCus() external view returns(bool);
+    // A function to register as a new customer to get your KYC checked by a bank
+    function newCustomer(string calldata _name, string calldata _hash, address _bank) external payable returns(bool);
+    // A function that allows you to be a bank and audit KYC data of customers
+    function newOrganisation(string calldata _name) external payable returns(bool);
+    // A function which is only visible to the bankers so they can verify the data
+    function viewCustomerData(address _address) external view returns(string memory);
+    // Customers also can change the their data if the KYC request gets rejected
+    function modifyCustomerData(string calldata _name,string calldata _hash, address _bank) 
+    external payable returns(bool);
+    // Checks the status of a customers KYC Request (Approved or Rejected or Pending)
+    function checkStatus() external returns(Status);
+    // Function that can change the status of a request (Only for banks)
+    function changeStatusToAccepted(address _custaddress) external payable;
+    // Function that can change the status of a request (Only for banks)
+    function changeStatusToRejected(address _custaddress) external payable;
+    // A function that enables the bank to lookup at all the KYC requests pointed at it
+    function viewRequests() external view returns(address[] memory);
+}
+
+contract KycBlockChain is KYC_Functions{
 
     address[] public Banks;
     address[] public Requests;
     uint public bankslength=0;
 
     enum Entity { Customer, Organisation } 
-    enum Status {Accepted, Rejected, Pending}
+    
 
     struct Customer{
         string c_name;
@@ -40,9 +65,8 @@ contract KycBlockChain{
             return true;
         }
         return false;
-    }
+    } 
 
-    
     function newCustomer(string memory _name, string memory _hash, address _bank) public payable returns(bool){
         require(!isCus(),"Customer Already Exists!");
         require(allOrganisations[_bank].exists,"No such Bank!");
@@ -113,5 +137,4 @@ contract KycBlockChain{
         return allOrganisations[msg.sender].allrequests;
     }
 
-    
 }

@@ -22,6 +22,16 @@ const GetAllBankAccounts = (props) => {
   }
 };
 
+const GetAllBankRequests = (props) => {
+  return (
+    <div>
+      {props.bankrequests.map((request) => (
+        <p key={request.key}>{request.address}</p>
+      ))}
+    </div>
+  );
+};
+
 class App extends Component {
   state = {
     web3: null,
@@ -40,6 +50,7 @@ class App extends Component {
     bank_count: 0,
     status: null,
     requestAddress: null,
+    bankrequests: [],
   };
 
   componentDidMount = async () => {
@@ -67,7 +78,7 @@ class App extends Component {
       });
       this.whoami();
       this.numbanks();
-      // this.GetAllBankAccounts();
+      this.onAccountChanged();
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -103,6 +114,12 @@ class App extends Component {
     this.setState({ requestAddress: event.target.value });
   };
 
+  onAccountChanged = () => {
+    window.ethereum.on("accountsChanged", () => {
+      window.location.reload();
+    });
+  };
+
   whoami = async () => {
     var { contract } = this.state;
     const cus = await contract.methods
@@ -127,7 +144,11 @@ class App extends Component {
           .digest("hex"),
         this.state.bank_verify
       )
-      .send({ from: this.state.account });
+      .send({ from: this.state.account })
+      .then(() => {
+        window.alert("You successfully made an account!");
+        window.location.reload();
+      });
   };
 
   createmybank = async () => {
@@ -135,7 +156,11 @@ class App extends Component {
 
     await contract.methods
       .newOrganisation(this.state.bname)
-      .send({ from: this.state.account });
+      .send({ from: this.state.account })
+      .then(() => {
+        window.alert("You are now a verified Bank Entity!");
+        window.location.reload();
+      });
   };
 
   getkycfromcustomer = async () => {
@@ -164,18 +189,13 @@ class App extends Component {
     var { contract } = this.state;
     var access = await contract.methods
       .isCus()
-      .call({ from: this.state.account })
-      .then(
-        () => {
-          window.alert("You successfully made an account!");
-        },
-        () => {
-          window.alert("You already have an account!");
-        }
-      );
+      .call({ from: this.state.account });
+
     if (!access) {
       this.createmycustomer();
       this.whoami();
+    } else {
+      window.alert("You already have an account!");
     }
   };
 
@@ -184,18 +204,19 @@ class App extends Component {
     var { contract } = this.state;
     var access = await contract.methods
       .isOrg()
-      .call({ from: this.state.account })
-      .then(
-        () => {
-          window.alert("You are now a verified Bank Entity!");
-        },
-        () => {
-          window.alert("You already are a bank!");
-        }
-      );
-    if (!access) {
+      .call({ from: this.state.account });
+
+    var ifcustomer = await contract.methods
+      .isCus()
+      .call({ from: this.state.account });
+
+    if (!access && !ifcustomer) {
       this.createmybank();
       this.whoami();
+    } else if (ifcustomer) {
+      window.alert("Customer entities cannot be a bank!");
+    } else {
+      window.alert("You are already a bank!");
     }
   };
 
@@ -218,7 +239,10 @@ class App extends Component {
         .send({ from: this.state.account })
         .then(() => {
           window.alert("Data Changed!");
+          window.location.reload();
         });
+    } else {
+      window.alert("You are not permitted to use this function!");
     }
   };
 
@@ -261,7 +285,16 @@ class App extends Component {
     var reqs = await contract.methods.viewRequests().call({
       from: this.state.account,
     });
-    console.log(reqs);
+    var all_reqs = [];
+    var i = 0;
+    for (const req in reqs) {
+      all_reqs.push({
+        key: i,
+        address: reqs[req],
+      });
+      i++;
+    }
+    this.setState({ bankrequests: all_reqs });
   };
 
   accept = async () => {
@@ -272,6 +305,7 @@ class App extends Component {
       .then(
         () => {
           window.alert("Status Changed!");
+          window.location.reload();
         },
         () => {
           window.alert("You are not authorized!");
@@ -287,6 +321,7 @@ class App extends Component {
       .then(
         () => {
           window.alert("Status Changed!");
+          window.location.reload();
         },
         () => {
           window.alert("You are not authorized!");
@@ -321,6 +356,12 @@ class App extends Component {
               <strong>Customer Registration Form</strong>
             </legend>
             <p>
+              <strong>
+                This form is only valid for new customer accounts.
+              </strong>
+            </p>
+
+            <p>
               <label>Your Name </label>
               <input type="text" onChange={this.myNameChangeHandler} />
             </p>
@@ -353,6 +394,10 @@ class App extends Component {
             <legend>
               <strong>Bank Registration Form</strong>
             </legend>
+
+            <p>
+              <strong>This form is only valid for new bank accounts.</strong>
+            </p>
             <p>
               <label>Bank Name </label>
               <input type="text" onChange={this.myBankNameChangeHandler} />
@@ -371,6 +416,11 @@ class App extends Component {
             <legend>
               <strong>Change Customer Data</strong>
             </legend>
+            <p>
+              <strong>
+                This form is only valid for existing customer accounts.
+              </strong>
+            </p>
             <p>
               <label>New Name </label>
               <input type="text" onChange={this.myNameChangeHandler} />
@@ -401,8 +451,12 @@ class App extends Component {
             <strong>Bank Requests</strong>
           </legend>
           <p>
+            <strong>This form is only valid for existing bank accounts.</strong>
+          </p>
+          <p>
             <button onClick={this.viewRequests}>View Requests</button>
           </p>
+          <GetAllBankRequests bankrequests={this.state.bankrequests} />
           <p>
             <label>Request Address </label>
             <input type="text" onChange={this.requestAddressChange} />
@@ -423,9 +477,12 @@ class App extends Component {
             <strong>View Customer data hash</strong>
           </label>
           <p>
+            <strong>This form is only valid for existing bank accounts.</strong>
+          </p>
+          <p>
             <input type="text" onChange={this.myDataChangeHandler} />
           </p>
-          <button onClick={this.get}>Get my Data</button>
+          <button onClick={this.get}>Get Customers Data</button>
           <p>The stored hash value is: {this.state.data_hash}</p>
         </div>
 
@@ -436,6 +493,11 @@ class App extends Component {
           <label>
             <strong>View Customer Status</strong>
           </label>
+          <p>
+            <strong>
+              This button is only valid for existing customer accounts.
+            </strong>
+          </p>
           <p>
             <button onClick={this.getmystatus}>Get Customer Status</button>
           </p>
