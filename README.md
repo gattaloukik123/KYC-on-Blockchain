@@ -15,6 +15,6 @@ backend - Ethereum Developement Network (Ganache), web3.js, truffle
   2) Also remember to change port to 8545 from 7545 if using ganache-cli.
   3) Do make sure you create bank accounts before creating a customer.
 
-#Logic flow of the application working
+# Logic flow of the application working
 
 ![logic flow](./logic-flow.png "logic-flow")
