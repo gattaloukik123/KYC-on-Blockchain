@@ -52,6 +52,8 @@ const show = (target) => {
 	}
 };
 //------tab navigation ends here--------
+
+//setting state values
 class App extends Component {
 	state = {
 		web3: null,
@@ -73,6 +75,7 @@ class App extends Component {
 		bankrequests: []
 	};
 
+	//execute this function after all the components are mounted
 	componentDidMount = async () => {
 		try {
 			// Get network provider and web3 instance.
@@ -104,6 +107,7 @@ class App extends Component {
 		show('new-customer');
 	};
 
+	//handler functions to take in form data
 	myNameChangeHandler = (event) => {
 		this.setState({ name: event.target.value });
 	};
@@ -136,6 +140,7 @@ class App extends Component {
 		});
 	};
 
+	//checking customer or bank
 	whoami = async () => {
 		var { contract } = this.state;
 		const cus = await contract.methods.isCus().call({ from: this.state.account });
@@ -145,6 +150,7 @@ class App extends Component {
 		this.setState({ entity: who });
 	};
 
+	// creating new customer
 	createmycustomer = async () => {
 		var { contract } = this.state;
 		await contract.methods.newCustomer(this.state.name, crypto.createHash('sha1').update(this.state.name + this.state.aadhar + this.state.pan).digest('hex'), this.state.bank_verify).send({ from: this.state.account }).then(() => {
@@ -153,6 +159,7 @@ class App extends Component {
 		});
 	};
 
+	//creating new bank
 	createmybank = async () => {
 		var { contract } = this.state;
 
@@ -162,6 +169,7 @@ class App extends Component {
 		});
 	};
 
+	//taking kyc data from the blockchain
 	getkycfromcustomer = async () => {
 		var { contract } = this.state;
 		const response = await contract.methods.viewCustomerData(this.state.getdata).call({ from: this.state.account });
@@ -179,6 +187,7 @@ class App extends Component {
 		}
 	};
 
+	//creating new customer
 	create_customer = async (e) => {
 		e.preventDefault();
 		var { contract } = this.state;
@@ -192,6 +201,7 @@ class App extends Component {
 		}
 	};
 
+	//creating new bank
 	create_bank = async (e) => {
 		e.preventDefault();
 		var { contract } = this.state;
@@ -209,6 +219,7 @@ class App extends Component {
 		}
 	};
 
+	//modifying customer data
 	modify_data = async (e) => {
 		e.preventDefault();
 		var { contract } = this.state;
@@ -223,6 +234,7 @@ class App extends Component {
 		}
 	};
 
+	//total number of banks saved in the blockchain
 	numbanks = async () => {
 		var { contract } = this.state;
 		var len = await contract.methods.bankslength().call();
@@ -240,6 +252,7 @@ class App extends Component {
 		this.setState({ allbanks: banks });
 	};
 
+	//view status of customer verification by the bank
 	getmystatus = async () => {
 		var { contract } = this.state;
 		var status = await contract.methods.checkStatus().call({ from: this.state.account });
@@ -255,6 +268,7 @@ class App extends Component {
 		}
 	};
 
+	//View customer requests by bank's internal access tab
 	viewRequests = async () => {
 		var { contract } = this.state;
 		var reqs = await contract.methods.viewRequests().call({
