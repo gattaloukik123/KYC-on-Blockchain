@@ -19,7 +19,7 @@ const GetAllBankAccounts = (props) => {
 const GetAllBankRequests = (props) => {
 	return <div>{props.bankrequests.map((request) => <p key={request.key}>{request.address}</p>)}</div>;
 };
-
+//------tab navigation starts here--------
 const hideAll = () => {
 	document.getElementsByClassName('new-customer')[0].style.display = 'none';
 	document.getElementsByClassName('existing-customer')[0].style.display = 'none';
@@ -51,6 +51,7 @@ const show = (target) => {
 		document.getElementsByClassName('new-bank')[0].style.display = 'block';
 	}
 };
+//------tab navigation ends here--------
 class App extends Component {
 	state = {
 		web3: null,
