@@ -6,7 +6,7 @@ frontend - ReactJS
 backend - Ethereum Developement Network (Ganache), web3.js, truffle
 
 # Commands
-  1) npm install or npm i 
+  1) to run the front end, cd into client folder and then npm install or npm i to install all the dependencies
   2) truffle migrate -- reset
   3) ganache-cli or you can use the Ganache Application
 
