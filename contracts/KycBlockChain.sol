@@ -23,6 +23,9 @@ interface KYC_Functions{
     function changeStatusToRejected(address _custaddress) external payable;
     // A function that enables the bank to lookup at all the KYC requests pointed at it
     function viewRequests() external view returns(address[] memory);
+    // A function that returns the name of a customer
+    function viewName(address _address) external view returns(string memory);
+
 }
 
 contract KycBlockChain is KYC_Functions{
@@ -136,5 +139,10 @@ contract KycBlockChain is KYC_Functions{
         require(isOrg(),"You are not Permitted");
         return allOrganisations[msg.sender].allrequests;
     }
+
+    function viewName(address _address) public view returns(string memory){
+        require(isOrg(),"Not an Organisation");
+        return allCustomers[_address].c_name;
+    } 
 
 }
