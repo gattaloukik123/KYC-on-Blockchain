@@ -412,9 +412,9 @@ class App extends Component {
 							<legend>
 								<strong>Change Customer Data</strong>
 							</legend>
-							<p>
+							{/* <p>
 								<strong>This form is only valid for existing customer accounts.</strong>
-							</p>
+							</p> */}
 							<p>
 								<label>New Name </label>
 								<input type="text" onChange={this.myNameChangeHandler} />
@@ -443,11 +443,11 @@ class App extends Component {
 						<legend>
 							<strong>Bank Requests</strong>
 						</legend>
-						<p>
+						{/* <p>
 							<strong>This form is only valid for existing bank accounts.</strong>
-						</p>
+						</p> */}
 						<p>
-							<button onClick={this.viewRequests}>View Requests</button>
+							<button onClick={this.viewRequests}>View user Requests</button>
 						</p>
 						<GetAllBankRequests bankrequests={this.state.bankrequests} />
 						<p>
@@ -468,13 +468,14 @@ class App extends Component {
 				</div>
 
 				<div className="existing-bank">
+					<br />
 					<div>
 						<label>
 							<strong>View Customer data hash</strong>
 						</label>
-						<p>
+						{/* <p>
 							<strong>This form is only valid for existing bank accounts.</strong>
-						</p>
+						</p> */}
 						<p>
 							<input type="text" onChange={this.myDataChangeHandler} />
 						</p>
@@ -484,13 +485,14 @@ class App extends Component {
 				</div>
 
 				<div className="existing-customer">
+					<br />
 					<div>
 						<label>
 							<strong>View Customer Status</strong>
 						</label>
-						<p>
+						{/* <p>
 							<strong>This button is only valid for existing customer accounts.</strong>
-						</p>
+						</p> */}
 						<p>
 							<button onClick={this.getmystatus}>Get Customer Status</button>
 						</p>
