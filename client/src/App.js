@@ -401,18 +401,21 @@ class App extends Component {
       <div className="App">
         <h2>Current Account is a {this.state.entity} entity</h2>
         <h3>{this.state.account}</h3>
+        <div className="form-top-padding">
         <fieldset>
-          <legend>
-            <strong>Verified Organisation Addresses</strong>
-          </legend>
+          <div className="form-title">
+            <strong>
+            Verified Organisation Addresses
+            </strong>
+            </div>
           <GetAllBankAccounts
             bankcount={this.state.bank_count}
             banks={this.state.allbanks}
           />
         </fieldset>
-
-        <br />
-        <div className="main-buttons-container">
+        </div>
+   
+        <div className="main-buttons-container form-top-padding form-bottom-padding">
           <button
             onClick={() => {
               show("new-customer");
@@ -447,19 +450,15 @@ class App extends Component {
           </button>
         </div>
 
-        <br />
+      
 
-        <div className="new-customer">
+        <div className="new-customer form-top-padding">
           <form action="." method="" onSubmit={this.create_customer}>
             <fieldset>
-              <legend>
-                <strong>Customer Registration Form</strong>
-              </legend>
-              <p>
-                <strong>
-                  This form is only valid for new customer accounts.
-                </strong>
-              </p>
+           
+                <div className="form-title form-bottom-padding">
+                <strong>Customer Registration Form (New customers only)</strong>
+                </div>
 
               <p>
                 <label>Your Name </label>
@@ -492,15 +491,9 @@ class App extends Component {
         <div className="new-bank">
           <form action="." method="" onSubmit={this.create_bank}>
             <fieldset>
-              <legend>
-                <strong>Organisation Registration Form</strong>
-              </legend>
-
-              <p>
-                <strong>
-                  This form is only valid for new organisation accounts.
-                </strong>
-              </p>
+            <div className="form-title form-bottom-padding">
+                <strong>Organisation registration form (New organisations only)</strong>
+                </div>
               <p>
                 <label>Organisation Name </label>
                 <input type="text" onChange={this.myBankNameChangeHandler} />
@@ -515,9 +508,11 @@ class App extends Component {
         <div className="existing-customer">
           <form action="." method="" onSubmit={this.modify_data}>
             <fieldset>
-              <legend>
-                <strong>Change Customer Data</strong>
-              </legend>
+              
+            <div className="form-title form-bottom-padding">
+                <strong>Update existing customer data (existing customers only)</strong>
+             </div>
+              
               <p>
                 <label>New Name </label>
                 <input type="text" onChange={this.myNameChangeHandler} />
@@ -543,13 +538,14 @@ class App extends Component {
 
         <div className="existing-bank">
           <fieldset>
-            <legend>
-              <strong>Organisation Requests</strong>
-            </legend>
+          <div className="form-title form-bottom-padding">
+                <strong>Requests</strong>
+             </div>
             <p>
               <button onClick={this.viewRequests}>View user Requests</button>
             </p>
             <GetAllBankRequests bankrequests={this.state.bankrequests} />
+            <div className="form-top-padding">
             <p>
               <label>Request Address </label>
               <input type="text" onChange={this.requestAddressChange} />
@@ -564,6 +560,7 @@ class App extends Component {
                 Reject Request
               </button>
             </p>
+            </div>
           </fieldset>
         </div>
 

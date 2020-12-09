@@ -36,3 +36,15 @@ input[type="submit"] {
 	color: white;
 	font-weight: bold;
 }
+.form-title{
+	display: flex;
+	justify-content: center;
+	padding-top: 10px;
+}
+
+.form-top-padding{
+	margin-top: 30px;
+}
+.form-bottom-padding{
+	margin-bottom: 30px;
+}
